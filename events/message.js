@@ -1,6 +1,5 @@
 module.exports = (client, message) => {
-    //screw that sans bot
-  //bot return
+  //bot exclusion
     if (message.author.bot) return;
     const Discord = require("discord.js")
     var list = client.phrases.list
