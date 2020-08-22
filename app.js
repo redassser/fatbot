@@ -1,5 +1,6 @@
 const express = require('express');
 const Enmap = require('enmap');
+require('dotenv').config();
 const Discord = require("discord.js");
 const client = new Discord.Client();
 const phrases = require("./config/MichaelPhrases.json");
@@ -28,5 +29,4 @@ fs.readdir("./commands/", (err, files) => {
     client.commands.set(commandName, props);
   });
 });
-
 client.login(process.env.TOKEN);
