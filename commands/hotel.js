@@ -83,6 +83,7 @@ exports.run = (client,message,array) => {
               ]
             }).then(channle =>{
               channle.send(helpembed);
+              message.channel.send("Done!")
               channle.send("Welcome to your room, "+message.author.toString()); return;
             })
             break;
