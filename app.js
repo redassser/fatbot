@@ -3,8 +3,8 @@ const Enmap = require('enmap');
 require('dotenv').config();
 const Discord = require("discord.js");
 const client = new Discord.Client();
-const phrases = require("./config/MichaelPhrases.json");
-client.phrases = phrases;
+client.deck = require("./config/cards.json").deck;
+client.phrases = require("./config/MichaelPhrases.json");
 const fs = require("fs");
 const prefix = ".";
 
