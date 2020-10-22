@@ -3,10 +3,14 @@ exports.run = (client,message,array) => {
     var gameSettings = {
         name: "blackjack",
         max: 4,
-        dmResponses: ["accept","decline"]
+        dmResponses: ["accept","decline"],
+        gameResponses: ["hit","stand"]
     }
     const dmfilter = (msg) => {
         return gameSettings.dmResponses.includes(msg.content.toLowerCase());
+    };
+    const gamefilter = (msg) => {
+        return gameSettings.gameResponses.includes(msg.content.toLowerCase());
     };
 
     var names = message.mentions.members ? message.mentions.members.array() : [];
@@ -47,30 +51,38 @@ exports.run = (client,message,array) => {
     }
     //Sort of modular invitation system over! Now to check
     var promises = []
-    for(i=0;i<people.length;i++){
-        promises.push(DMinvite(people[i]))
+    for(let person of people){
+        promises.push(DMinvite(person))
     }
-    Promise.all(promises).
-    then((results) => {
-        console.log("GAME STARTS NOW!!!")
+    var hands = new Object();
+    Promise.all(promises)
+    .then(() => {
         beginGame()
+        var gamepromises = []
+        for(let person of people){
+            gamepromises.push(HorS(person))
+        }
+        Promise.all(gamepromises).then((h)=>{
+            let finalembed = new Discord.MessageEmbed()
+            .setAuthor("Blackjack","https://i.imgur.com/XUyyqSy.png")
+            .setThumbnail("https://i.imgur.com/FtRVdOS.png")
+            .setTitle("Hands")
+            .addField("Dealer's hand total is "+checkTotal(client.user.id),hands[client.user.id]);
+            for(let person of people) {
+                finalembed.addField(`${person.username}'s hand total is `+checkTotal(person.id),hands[person.id]);
+            }
+            for(let person of people) {
+                person.send(finalembed).catch(console.error);
+            }
+        })
     }).catch(error=>{/*Get out of my console you brick for brain*/});
-    //Checking is all well and good, but now on to the game.
+    
     function beginGame() {
         const deck = client.deck;
-        //first players and dealer must be given cards
-        function genCards(amount) {
-            var cards = []
-            for(let x=0;x<amount;x++){
-                cards.push(client.deck[Math.floor(Math.random()*52)])
-            }
-            return cards;
-        }
-        var hands = new Object();
+        //first players and dealer must be given cards 
         const dealerhand = genCards(2);
-        hands[client.id] = dealerhand;
+        hands[client.user.id] = dealerhand;
         hands["dealer"] = [dealerhand[0],"Hidden card"]
-
         for(let person of people) {
             hands[person.id] = genCards(2);
         }
@@ -86,46 +98,89 @@ exports.run = (client,message,array) => {
         for(let person of people) {
             person.send(cardembed).catch(console.error);
         }
-        //then cards must be checked for 21s. dealer wins first
-        if(checkTotal(client)===21) {WIN21(client);} 
+        
+        if(checkTotal(client.user.id)===21) {WIN21(client.user);return;} 
         else {
             for(let person of people) {
-                if(checkTotal(person)===21) {WIN21(person);} 
+                if(checkTotal(person.id)===21) {WIN21(person);return;} 
             }
         }   
-
-        function checkTotal(person) {
-            var total = 0;
-            for(let card of hands[person.id]) {
-                if(isNaN(card[0])) {total = (card[0]==="A") ? total+11 : total+10}
-                else {total = total+card[0]}
-            }
-            return total;
+    }
+    function checkTotal(id) {
+        var total = 0;
+        for(let card of hands[id]) {
+            if(isNaN(card[0])) {total = (card[0]==="A") ? total+11 : total+10}
+            else {total = total+card[0]}
         }
-        function WIN21(winner) {
-            let winembed = new Discord.MessageEmbed()
-            if (winner.id===client.id) {
-                winembed
-                .setAuthor("Dealer","https://i.imgur.com/XUyyqSy.png")
-                .setThumbnail("https://i.imgur.com/FtRVdOS.png")
-                .setTitle("Dealer has won by getting 21!")
-                .addField("Dealer's hand",hands[winner.id]);
-            } else {
-                winembed
-                .setAuthor(winner.username,winner.avatarURL())
-                .setThumbnail("https://i.imgur.com/FtRVdOS.png")
-                .setTitle(winner.username+" has won by getting 21!")
-                .addField(winner.username+"'s hand",hands[winner.id]);
-            }
-            for(let person of people) {
-                person.send(winembed);
-            }
-            return;
+        return total;
+    }
+    function WIN21(winner) {
+        let winembed = new Discord.MessageEmbed()
+        if (winner.id===client.user.id) {
+            winembed
+            .setAuthor("Dealer","https://i.imgur.com/XUyyqSy.png")
+            .setThumbnail("https://i.imgur.com/FtRVdOS.png")
+            .setTitle("Dealer has won by getting 21!")
+            .addField("Dealer's hand",hands[winner.id]);
+        } else {
+            winembed
+            .setAuthor(winner.username,winner.avatarURL())
+            .setThumbnail("https://i.imgur.com/FtRVdOS.png")
+            .setTitle(winner.username+" has won by getting 21!")
+            .addField(winner.username+"'s hand",hands[winner.id]);
         }
-        //afterwards, players hit and stand, one after another
-        //hand is shown shown to player after each hit
-        //all hands are shown to player after stand or loss
-        //after everyone loses or stands, dealer takes shows hand 
-        //final win or loss message sent to all players
+        for(let person of people) {
+            person.send(winembed);
+        }
+        return;
+    }
+    function genCards(amount) {
+        var cards = []
+        if(amount===1) {cards = client.deck[Math.floor(Math.random()*52)]}
+        else {
+            for(let x=0;x<amount;x++){
+                cards.push(client.deck[Math.floor(Math.random()*52)])
+            }
+        }
+        return cards;
+    }
+    function HorS(player) {
+        return new Promise(function(resolve){ 
+        player.send(`It's your turn!\nRespond with \`\`hit\`\` or \`\`stand\`\`.`)
+        .catch(()=>{message.channel.send(`Sorry, but user ${player.username} is not accepting DMs, and therefore cannot play!`);return;})
+        .then(msg=>{
+            const coll = msg.channel.createMessageCollector(gamefilter)
+            coll.on("collect", m=>{
+                let hsembed = new Discord.MessageEmbed()
+                console.log(m.content)
+                switch(m.content) {
+                    case "hit":
+                        hands[player.id].push(genCards(1))
+                        hsembed
+                        .setAuthor(player.username,player.avatarURL())
+                        .setThumbnail("https://i.imgur.com/FtRVdOS.png")
+                        .setTitle("Hand total is now "+checkTotal(player.id))
+                        .addField(player.username+"'s hand",hands[player.id]);
+                        message.channel.send(hsembed)
+                        if(checkTotal(player.id)>21){coll.stop(); resolve(player.username+"l")}
+                        else if(checkTotal(player.id)===21) {coll.stop(); resolve(player.username+"w")}
+                        break;
+                    case "stand":
+                        hsembed
+                        .setAuthor(player.username,player.avatarURL())
+                        .setThumbnail("https://i.imgur.com/FtRVdOS.png")
+                        .setTitle("Hand total is "+checkTotal(player.id))
+                        .addField(player.username+"'s hand",hands[player.id]);
+                        message.channel.send(hsembed)
+                        coll.stop();
+                        resolve(player.username+"s");
+                        break;
+                }
+            })
+            coll.on("end",()=>{
+                player.send("Your turn is now over!")
+            })
+        })
+    })
     }
 }

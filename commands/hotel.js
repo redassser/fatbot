@@ -180,7 +180,7 @@ exports.run = (client,message,array) => {
             var ping = message.mentions.members.first()
             if (ping===undefined) {message.channel.send("Please ping a user who has access to this room.");return;}
             if (ping.id === client.user.id || ping.id === message.author.id) {message.channel.send("Please ping a room guest...");return;}
-            message.channel.send("You are about to invite "+ping.toString()+", is that okay?\nRespond with \"yes\" if so.").then(msg=>{
+            message.channel.send("You are about to remove "+ping.toString()+", is that okay?\nRespond with \"yes\" if so.").then(msg=>{
               msg.channel.awaitMessages(filter, {max:1,time:10000,errors:["time"]})
               .then(collected=>{
                 message.channel.updateOverwrite(ping,

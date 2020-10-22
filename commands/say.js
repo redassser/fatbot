@@ -11,7 +11,8 @@ exports.run = (client,message,array) => {
       if(channel===null||channel===undefined|| !channel) { //exception
         message.channel.send("``Not a valid Channel``");
       } else if (client.channels.cache.get(channel).toString()) { //statement
-        client.channels.cache.get(channel.toString()).send(mesage);
+        client.channels.cache.get(channel.toString()).send(mesage)
+        .catch(()=>{message.channel.send("Something went wrong! I'd guess permissions.")});
       } else { //exception
         message.channel.send("``Not a valid Channel``");
       }
