@@ -44,7 +44,8 @@ exports.run = (client,message,array) => {
     if (array[0]==="help") {
       message.channel.send(helpembed)
     }
-    if(message.channel.parent.name != "Hotel") {message.channel.send("Hotel commands only work in the hotel!");return;} 
+    if(message.channel.parent === null) {message.channel.send("Hotel commands only work in the hotel!");return;}
+    if(message.channel.parent.name != "Hotel") {message.channel.send("Hotel commands only work in the hotel!");return;}
     var chan = message.channel.name; var userid = message.author.id; 
     var hotel = message.guild.channels.cache.find(h=>h.type==="category"&&h.name==="Hotel")
     var subject = array.shift(); var exec = array.shift();
