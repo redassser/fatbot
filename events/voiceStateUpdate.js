@@ -1,11 +1,11 @@
 const { VoiceBroadcast } = require("discord.js");
 
 module.exports = (client, oldmember, newmember) => {
-    if(newmember.channel!=null&&newmember.channel.parent.name=="auto-vc") { //if they join
+    if(newmember.channel!=null&&newmember.channel.parent.name=="auto-zone") { //if they join
         var chanid = newmember.channel.id
         checkLatest(chanid);
     }
-    if(oldmember.channel!=null&&oldmember.channel.parent.name=="auto-vc") { //if they leave
+    if(oldmember.channel!=null&&oldmember.channel.parent.name=="auto-zone") { //if they leave
         var chanid = oldmember.channel.id
         checkPast(chanid)
         return;
@@ -37,7 +37,7 @@ module.exports = (client, oldmember, newmember) => {
             var dead = emptychanarray[0]
             var sad = parnt.guild.channels.cache.find(h=>h.id==dead)
             sad.delete();
-        } else if (newmember.channel.parent.name=="auto-vc"&&emptychanarray.length===1) {
+        } else if (newmember.channel.parent.name=="auto-zone"&&emptychanarray.length===1) {
             //var dead = Math.min.apply(Math,emptychanarray);
             var dead = emptychanarray[0]
             var sad = parnt.guild.channels.cache.find(h=>h.id==dead)
