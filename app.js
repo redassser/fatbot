@@ -5,6 +5,7 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 client.deck = require("./config/cards.json").deck;
 client.phrases = require("./config/MichaelPhrases.json");
+client.vc = require("./config/vcnames.json").auto;
 const fs = require("fs");
 const prefix = ".";
 
