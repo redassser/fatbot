@@ -34,14 +34,19 @@ module.exports = (client, oldmember, newmember) => {
         .each(channel => emptychanarray.push(channel))
         if(emptychanarray.length>1) {
             //var dead = Math.min.apply(Math,emptychanarray);
-            var dead = emptychanarray[0]
-            var sad = parnt.guild.channels.cache.find(h=>h.id==dead)
+            for(let x=0;x<emptychanarray.length-1;x++) {
+                var dead = emptychanarray[x]
+                var sad = parnt.guild.channels.cache.find(h=>h.id==dead)
+                sad.delete().catch();
+            }
             sad.delete();
         } else if (newmember.channel.parent.name=="auto-zone"&&emptychanarray.length===1) {
             //var dead = Math.min.apply(Math,emptychanarray);
-            var dead = emptychanarray[0]
-            var sad = parnt.guild.channels.cache.find(h=>h.id==dead)
-            sad.delete();
+            for(let x=0;x<emptychanarray.length;x++) {
+                var dead = emptychanarray[x]
+                var sad = parnt.guild.channels.cache.find(h=>h.id==dead)
+                sad.delete().catch();
+            }
         }
     }
 }
