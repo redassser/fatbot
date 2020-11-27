@@ -15,6 +15,7 @@ module.exports = (client, oldmember, newmember) => {
         return client.vc[Math.floor(Math.random() * client.vc.length)];
     }
     function checkLatest(id) {
+        if(newmember.channelID === oldmember.channelID) {return;}
         if(newmember.channel.members.size>1) {return;}
         var chanarray = []; const parnt = newmember.channel.parent
         if(parnt.children.has(channel => channel.members.first()===undefined)) {return;}
