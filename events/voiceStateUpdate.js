@@ -1,49 +1,33 @@
-const { VoiceBroadcast } = require("discord.js");
-const vcname = "auto-zone"
-module.exports = (client, oldmember, newmember) => {
-    if(!newmember.guild.members.cache.get(client.user.id).hasPermission("MANAGE_CHANNELS")) {newmember.member.send("Sorry! I don't have the ``manage_messages`` permission!");return;}
-    if(newmember.channel!=null&&newmember.channel.parent.name==vcname) { //if they join
-        var chanid = newmember.channel.id
-        checkLatest(chanid);
-    }
-    if(oldmember.channel!=null&&oldmember.channel.parent.name==vcname) { //if they leave
-        var chanid = oldmember.channel.id
-        checkPast(chanid)
+module.exports = (client, memberPrev, memberNew) => {
+    //AUTOVC
+    if(!memberNew.guild.me.permissions.has("MANAGE_CHANNELS")) return; 
+    const channelNames = client.config.vcnames;
+    randomName = () => channelNames[Math.floor(Math.random()*channelNames.length)];
+    var channelNew = memberNew.channel; channelPrev = memberPrev.channel
+
+    if(channelNew!=null&&channelNew.parent.name=="autovc") { //if they join
+        const parent = channelNew.parent;
+        update(parent);
         return;
     }
-    function randomName() {
-        return client.vc[Math.floor(Math.random() * client.vc.length)];
+    if(channelPrev!=null&&channelPrev.parent.name=="autovc") { //if they leave
+        const parent = channelPrev.parent;
+        update(parent);
+        return;
     }
-    function checkLatest(id) {
-        if(newmember.channelID === oldmember.channelID) {return;}
-        if(newmember.channel.members.size>1) {return;}
-        var chanarray = []; const parnt = newmember.channel.parent
-        if(parnt.children.has(channel => channel.members.first()===undefined)) {return;}
-        parnt.children.each(channel => chanarray.push(channel.id))
-        if(chanarray.includes(id)) {
-            parnt.guild.channels.create(randomName(),
-                {
-                    type: "voice",
-                    parent: parnt,
-                    bitrate: 96000
-                }
-            ); return;
+    function update(parent) {
+        const emptynum = parent.children
+            .filter(channel=>channel.members.first() === undefined)
+            .size
+        if(emptynum > 1) {
+            channelPrev.delete();
+        } else if (emptynum === 0) {
+            parent.guild.channels.create(randomName(), {
+                type: "GUILD_VOICE",
+                parent: parent,
+                bitrate: 72000
+            });
         }
     }
-    function checkPast(id) {
-        if(oldmember.channel.members.first()!=undefined) {return;}
-        var emptychanarray = []; const parnt = oldmember.channel.parent; var xnum;
-        parnt.children.filter(channel => channel.members.first()===undefined)
-        .each(channel => emptychanarray.push(channel))
-        if(emptychanarray.length>1) {
-            xnum = emptychanarray.length-1
-        } else if (newmember.channel.parent.name==vcname&&emptychanarray.length===1) {
-            xnum = emptychanarray.length
-        }
-        for(let x=0;x<xnum;x++) {
-            var dead = emptychanarray[x]
-            var sad = parnt.guild.channels.cache.find(h=>h.id==dead)
-            sad.delete()
-        }
-    }
+    //AUTOVC
 }

@@ -54,3 +54,5 @@ exports.run = (client,message,array) => {
     })
     }
   }
+  exports.desc="search r34."
+  exports.inp=["[tag]","{more tags}"]

@@ -8,3 +8,5 @@ exports.run = (client,message,array) => {
     .then(messages => message.channel.send(`${messages.size-1} messages be gone`))
     .catch(console.error);
 }
+exports.desc="Delete this many messages."
+  exports.inp=["[number 1-99]"]

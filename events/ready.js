@@ -1,4 +1,12 @@
 module.exports = (client,message,array) => {
-    console.log("Launched");
-    client.user.setPresence({ game: { name: '.help' }, status: 'online' });
+    //FRAMEWORK
+    console.log("ready")
+    client.user.setPresence({ 
+        activity: { 
+            name: "botsbypie",
+            type: "WATCHING" 
+        }, 
+        status: 'online' 
+    });
+    //FRAMEWORK
 }

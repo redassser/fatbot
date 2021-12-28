@@ -17,3 +17,5 @@ exports.run = (client,message,array) => {
         message.channel.send("``Not a valid Channel``");
       }
   }
+  exports.desc="Repeat your message in another channel."
+  exports.inp=["[#channel]","[message]"]

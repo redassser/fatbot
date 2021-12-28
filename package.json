@@ -1,28 +1,19 @@
 {
-  "name": "fatbot",
-  "description": "Little bot for our server",
-  "version": "1.0.6",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
-  },
-  "engines": {
-    "node": "12.18.3"
-  },
-  "keywords": [
-    "cool",
-    "epic",
-    "nice"
-  ],
-  "author": "Pie",
-  "license": "ISC",
-  "dependencies": {
-    "booru": "^2.4.0",
-    "discord.js": "^12.5.1",
-    "dotenv": "^8.2.0",
-    "enmap": "^5.8.2",
-    "express": "^4.17.1",
-    "request": "^2.88.2"
-  }
+    "name": "botsbypie",
+    "description": "a bot, made by pie",
+    "version": "0.0.0",
+    "main": "app.js",
+    "scripts": {
+        "start": "node app.js"
+    },
+    "engines": {
+        "node": "16.13.1"
+    },
+    "author": "pie",
+    "license": "ISC",
+    "dependencies": {
+        "discord.js": "^13.3.1",
+        "dotenv": "^8.2.0",
+        "enmap": "^5.8.2"
+    }
 }
