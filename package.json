@@ -1,7 +1,7 @@
 {
-    "name": "botsbypie",
-    "description": "a bot, made by pie",
-    "version": "0.0.0",
+    "name": "fatbot",
+    "description": "the bot for our personal discord, renegade roundup",
+    "version": "1.1.0",
     "main": "app.js",
     "scripts": {
         "start": "node app.js"

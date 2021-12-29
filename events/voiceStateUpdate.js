@@ -16,12 +16,11 @@ module.exports = (client, memberPrev, memberNew) => {
         return;
     }
     function update(parent) {
-        const emptynum = parent.children
+        const empty = parent.children
             .filter(channel=>channel.members.first() === undefined)
-            .size
-        if(emptynum > 1) {
-            channelPrev.delete();
-        } else if (emptynum === 0) {
+        if(empty.size > 1) {
+            empty.last().delete();
+        } else if (empty.size === 0) {
             parent.guild.channels.create(randomName(), {
                 type: "GUILD_VOICE",
                 parent: parent,
