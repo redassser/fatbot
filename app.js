@@ -7,7 +7,7 @@ const client = new Discord.Client({
         Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS //AUTOROLE
     ]
 });
-client.config = require("./config.json")
+client.config = require("./assets/config.json")
 const fs = require("fs");
 const Enmap = require('enmap');
 require('dotenv').config();
