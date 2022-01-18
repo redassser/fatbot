@@ -4,7 +4,8 @@ const client = new Discord.Client({
         Discord.Intents.FLAGS.GUILDS, //FRAMEWORK
         Discord.Intents.FLAGS.GUILD_MESSAGES, //FRAMEWORK
         Discord.Intents.FLAGS.GUILD_VOICE_STATES, //AUTOVC
-        Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS //AUTOROLE
+        Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, //AUTOROLE
+        Discord.Intents.FLAGS.GUILD_MEMBERS //AUTOROLE {privileged}
     ]
 });
 client.config = require("./assets/config.json")
