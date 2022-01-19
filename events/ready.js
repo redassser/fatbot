@@ -13,7 +13,7 @@ module.exports = (client,message,array) => {
     client.channels.cache
         .filter(channel => (channel.name === "autorole"&&channel.type === "GUILD_TEXT"))
         .forEach(channel => {
-            if(!channel.permissionsFor(channel.guild.me).has("READ_MESSAGE_HISTORY")) return; 
+            if(!channel.permissionsFor(channel.guild.me).has(["READ_MESSAGE_HISTORY","VIEW_CHANNEL"])) return; 
             channel.messages.fetch({limit:20})
         });
     //AUTOROLE
