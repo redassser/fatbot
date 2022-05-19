@@ -5,7 +5,7 @@ exports.run = (client,message,array) => {
         .setColor("RANDOM")
         .setFooter("{optional} [required]")
     client.commands.forEach((cmd,name) => {
-        helpEmbed.addField(`.${name} ${cmd.inp.join(" ")}`,cmd.desc)
+        helpEmbed.addField(`${client.config.prefix}${name} ${cmd.inp.join(" ")}`,cmd.desc)
     })
     message.channel.send({embeds:[helpEmbed]})
 }
